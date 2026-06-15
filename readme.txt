@@ -2,7 +2,7 @@
 Contributors: lewisushindi
 Tags: social proof, fomo, notifications, woocommerce, conversions
 Requires at least: 6.2
-Tested up to: 6.5
+Tested up to: 7.0
 Requires PHP: 8.0
 Stable tag: 1.0.0
 License: GPLv3 or later

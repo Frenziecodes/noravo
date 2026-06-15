@@ -1,0 +1,159 @@
+# Copyright (C) 2026 Fomozo
+# This file is distributed under the GPL-3.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Fomozo 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/fomozo\n"
+"POT-Creation-Date: 2026-06-15 00:00+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Fomozo\n"
+"X-Domain: fomozo\n"
+
+#. Plugin Name of the plugin
+msgid "Fomozo"
+msgstr ""
+
+#. Description of the plugin
+msgid "Boost conversions with Fomozo: Social Proof & FOMO Notifications for WordPress."
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "You do not have permission to manage Fomozo settings."
+msgstr ""
+
+msgid "Modern social proof and trust signals for WordPress"
+msgstr ""
+
+msgid "Launch subtle, believable conversion notifications without adding bloat to your site."
+msgstr ""
+
+msgid "Live"
+msgstr ""
+
+msgid "Paused"
+msgstr ""
+
+msgid "Fomozo settings saved."
+msgstr ""
+
+msgid "Start with a confident preview"
+msgstr ""
+
+msgid "Demo mode is enabled by default so you can see Fomozo working immediately. Connect WooCommerce when you are ready to use real purchase activity."
+msgstr ""
+
+msgid "Detected"
+msgstr ""
+
+msgid "Not installed"
+msgstr ""
+
+msgid "General"
+msgstr ""
+
+msgid "Enable notifications"
+msgstr ""
+
+msgid "Show Fomozo notifications on the frontend."
+msgstr ""
+
+msgid "Demo mode"
+msgstr ""
+
+msgid "Use sample notifications for instant previews."
+msgstr ""
+
+msgid "Integrations"
+msgstr ""
+
+msgid "Available"
+msgstr ""
+
+msgid "Install plugin"
+msgstr ""
+
+msgid "Display"
+msgstr ""
+
+msgid "Position"
+msgstr ""
+
+msgid "Where notifications appear on the visitor-facing site."
+msgstr ""
+
+msgid "Animation"
+msgstr ""
+
+msgid "The entrance style used when each notification appears."
+msgstr ""
+
+msgid "Slide"
+msgstr ""
+
+msgid "Fade"
+msgstr ""
+
+msgid "Initial delay"
+msgstr ""
+
+msgid "How long Fomozo waits before showing the first notification, in milliseconds."
+msgstr ""
+
+msgid "Interval"
+msgstr ""
+
+msgid "How long Fomozo waits between notifications, in milliseconds."
+msgstr ""
+
+msgid "Maximum per page"
+msgstr ""
+
+msgid "The most notifications a visitor can see during a single page visit."
+msgstr ""
+
+msgid "Save settings"
+msgstr ""
+
+msgid "Just now"
+msgstr ""
+
+msgid "1 minute ago"
+msgstr ""
+
+#. translators: %d is the number of minutes since the notification event.
+msgid "%d minutes ago"
+msgstr ""
+
+msgid "1 hour ago"
+msgstr ""
+
+#. translators: %d is the number of hours since the notification event.
+msgid "%d hours ago"
+msgstr ""
+
+msgid "WooCommerce"
+msgstr ""
+
+msgid "Show recent purchase activity as elegant social proof notifications."
+msgstr ""
+
+#. translators: %s is a city name.
+msgid "Someone in %s"
+msgstr ""
+
+msgid "A customer"
+msgstr ""
+
+msgid "New purchase"
+msgstr ""
+
+#. translators: 1: customer place label, 2: product name.
+msgid "%1$s purchased %2$s"
+msgstr ""
+
+msgid "a product"
+msgstr ""

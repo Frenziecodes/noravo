@@ -64,8 +64,8 @@ final class AdminPage {
 
 		check_admin_referer('fomozo_save_settings');
 
-		$raw_sources = isset($_POST['enabled_sources']) && is_array($_POST['enabled_sources'])
-			? wp_unslash($_POST['enabled_sources'])
+		$enabled_sources = isset($_POST['enabled_sources'])
+			? array_map('sanitize_key', (array) wp_unslash($_POST['enabled_sources']))
 			: array();
 
 		$this->settings->update(
@@ -77,13 +77,13 @@ final class AdminPage {
 				'initial_delay'   => isset($_POST['initial_delay']) ? absint(wp_unslash($_POST['initial_delay'])) : 0,
 				'interval'        => isset($_POST['interval']) ? absint(wp_unslash($_POST['interval'])) : 0,
 				'max_per_page'    => isset($_POST['max_per_page']) ? absint(wp_unslash($_POST['max_per_page'])) : 0,
-				'enabled_sources' => array_map('sanitize_key', $raw_sources),
+				'enabled_sources' => $enabled_sources,
 			)
 		);
 
 		update_option('fomozo_onboarding_complete', 'yes', false);
 
-		wp_safe_redirect(add_query_arg('updated', 'true', admin_url('admin.php?page=fomozo')));
+		wp_safe_redirect(wp_nonce_url(add_query_arg('updated', 'true', admin_url('admin.php?page=fomozo')), 'fomozo_settings_updated'));
 		exit;
 	}
 
@@ -96,6 +96,9 @@ final class AdminPage {
 		$is_onboarding  = 'yes' !== get_option('fomozo_onboarding_complete', 'no');
 		$integrations   = $this->integrations->all();
 		$enabled_sources = $settings['enabled_sources'];
+		$show_updated    = isset($_GET['updated'], $_GET['_wpnonce'])
+			&& wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'fomozo_settings_updated')
+			&& 'true' === sanitize_text_field(wp_unslash($_GET['updated']));
 		?>
 		<div class="wrap fomozo-admin">
 			<div class="fomozo-shell">
@@ -110,7 +113,7 @@ final class AdminPage {
 					</div>
 				</header>
 
-				<?php if (isset($_GET['updated'])) : ?>
+				<?php if ($show_updated) : ?>
 					<div class="notice notice-success is-dismissible"><p><?php esc_html_e('Fomozo settings saved.', 'fomozo'); ?></p></div>
 				<?php endif; ?>
 

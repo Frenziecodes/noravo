@@ -46,8 +46,6 @@ final class Plugin {
 		$this->providers    = new NotificationProviderRegistry();
 		$this->integrations = new IntegrationRegistry();
 
-		add_action('init', array($this, 'load_textdomain'));
-
 		$this->register_providers();
 		$this->register_integrations();
 		$this->maybe_disable_demo_for_real_orders();
@@ -60,10 +58,6 @@ final class Plugin {
 		if (is_admin()) {
 			(new AdminPage($this->settings, $this->integrations, $assets))->register();
 		}
-	}
-
-	public function load_textdomain(): void {
-		load_plugin_textdomain('fomozo', false, dirname(FOMOZO_BASENAME) . '/languages');
 	}
 
 	private function register_providers(): void {

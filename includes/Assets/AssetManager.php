@@ -49,8 +49,10 @@ final class AssetManager {
 				'i18n'         => array(
 					'justNow'    => __('Just now', 'fomozo'),
 					'minuteAgo'  => __('1 minute ago', 'fomozo'),
+					/* translators: %d is the number of minutes since the notification event. */
 					'minutesAgo' => __('%d minutes ago', 'fomozo'),
 					'hourAgo'    => __('1 hour ago', 'fomozo'),
+					/* translators: %d is the number of hours since the notification event. */
 					'hoursAgo'   => __('%d hours ago', 'fomozo'),
 				),
 			)
