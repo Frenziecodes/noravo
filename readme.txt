@@ -5,7 +5,7 @@ Tags: social proof, fomo, notifications, woocommerce, conversions
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Donate link: https://github.com/Frenziecodes/noravo
@@ -54,9 +54,14 @@ Yes. The plugin is designed with extensibility and modern WordPress development 
 == Screenshots ==
 
 1. Noravo onboarding screen.
+2. Noravo Settings.
 3. Live frontend social proof notification example.
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+
+Tweaks
 
 = 1.0.1 =
 
@@ -67,6 +72,10 @@ Rename plugin
 Initial release.
 
 == Changelog ==
+
+= 1.0.2 =
+
+* tweaks.
 
 = 1.0.1 =
 
