@@ -3,7 +3,7 @@
  * Plugin Name: Noravo
  * Plugin URI: https://github.com/Frenziecodes/Noravo
  * Description: Boost conversions with Noravo: Social Proof & FOMO Notifications for WordPress.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Requires at least: 6.2
  * Requires PHP: 8.0
  * Author: lewisushindi
@@ -22,15 +22,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'NORAVO_VERSION', '1.0.2' );
+define( 'NORAVO_VERSION', '1.0.3' );
 define( 'NORAVO_FILE', __FILE__ );
-define( 'NORAVO_PATH', plugin_dir_path(__FILE__) );
-define( 'NORAVO_URL', plugin_dir_url(__FILE__) );
-define( 'NORAVO_BASENAME', plugin_basename(__FILE__) );
+define( 'NORAVO_PATH', plugin_dir_path( __FILE__ ) );
+define( 'NORAVO_URL', plugin_dir_url( __FILE__ ) );
+define( 'NORAVO_BASENAME', plugin_basename( __FILE__ ) );
 
-require_once NORAVO_PATH . 'includes/Autoloader.php';
+$noravo_autoload = NORAVO_PATH . 'vendor/autoload.php';
 
-\Noravo\Autoloader::register();
+if ( is_readable( $noravo_autoload ) ) {
+	require_once $noravo_autoload;
+} else {
+	require_once NORAVO_PATH . 'includes/Autoloader.php';
+
+	\Noravo\Autoloader::register();
+}
 
 register_activation_hook(
 	__FILE__,

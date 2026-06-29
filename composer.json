@@ -1,0 +1,24 @@
+{
+	"name": "frenziecodes/noravo",
+	"description": "Boost conversions with Noravo: Social Proof & FOMO Notifications for WordPress.",
+	"type": "wordpress-plugin",
+	"license": "GPL-3.0-or-later",
+	"authors": [
+		{
+			"name": "lewisushindi",
+			"homepage": "https://github.com/Frenziecodes/"
+		}
+	],
+	"require": {
+		"php": ">=8.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"Noravo\\": "includes/"
+		}
+	},
+	"config": {
+		"optimize-autoloader": true,
+		"sort-packages": true
+	}
+}

@@ -9,6 +9,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@master
+    - name: Install Composer dependencies
+      run: composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
     - name: WordPress Plugin Deploy
       id: deploy
       uses: 10up/action-wordpress-plugin-deploy@stable
