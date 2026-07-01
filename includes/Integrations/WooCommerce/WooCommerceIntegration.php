@@ -7,15 +7,16 @@
 
 declare(strict_types=1);
 
-namespace Noravo\Integrations;
+namespace Noravo\Integrations\WooCommerce;
 
+use Noravo\Integrations\AbstractIntegration;
 use Noravo\Notifications\NotificationProviderInterface;
 use Noravo\Settings\SettingsRepository;
 
 /**
  * Builds purchase notifications from recent WooCommerce orders.
  */
-final class WooCommerceIntegration implements IntegrationInterface, NotificationProviderInterface {
+final class WooCommerceIntegration extends AbstractIntegration implements NotificationProviderInterface {
 	private SettingsRepository $settings;
 
 	/** @param SettingsRepository $settings Plugin settings store. */
@@ -37,6 +38,11 @@ final class WooCommerceIntegration implements IntegrationInterface, Notification
 
 	public function description(): string {
 		return __('Show recent purchase activity as elegant social proof notifications.', 'noravo');
+	}
+
+	/** Folder name for this integration. */
+	protected function folder_name(): string {
+		return 'WooCommerce';
 	}
 
 	/** Whether WooCommerce is active and usable. */

@@ -13,7 +13,7 @@ use Noravo\Admin\AdminPage;
 use Noravo\Assets\AssetManager;
 use Noravo\Frontend\Frontend;
 use Noravo\Integrations\IntegrationRegistry;
-use Noravo\Integrations\WooCommerceIntegration;
+use Noravo\Integrations\WooCommerce\WooCommerceIntegration;
 use Noravo\Notifications\DemoNotificationProvider;
 use Noravo\Notifications\NotificationProviderRegistry;
 use Noravo\Rest\NotificationsController;

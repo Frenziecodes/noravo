@@ -75,7 +75,7 @@ final class IntegrationsListTable extends \WP_List_Table {
 	public function column_icon($item): string {
 		return sprintf(
 			'<img class="noravo-integration-icon" src="%1$s" alt="%2$s" width="24" height="24" loading="lazy" style="display:inline-block;width:24px;height:24px;max-width:24px;max-height:24px;object-fit:contain;vertical-align:middle;border-radius:4px;">',
-			esc_attr($this->integration_icon_url($item->id())),
+			esc_url($item->icon_url()),
 			esc_attr($item->label())
 		);
 	}
@@ -179,14 +179,4 @@ final class IntegrationsListTable extends \WP_List_Table {
 		return $integration->is_available() && in_array($integration->id(), $this->enabled_sources, true);
 	}
 
-	/** Returns a small integration icon as an image URL. */
-	private function integration_icon_url(string $integration): string {
-		if ('woocommerce' === $integration) {
-			$svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect width="48" height="48" rx="10" fill="#7f54b3"/><path fill="#fff" d="M10 17.5c0-2.5 2-4.5 4.5-4.5h19c2.5 0 4.5 2 4.5 4.5v9c0 2.5-2 4.5-4.5 4.5H25l-6.5 4.5V31h-4C12 31 10 29 10 26.5v-9Z"/><path fill="#7f54b3" d="M15.2 19h2.7l1.3 5.7 1.6-5.7h2.4l1.7 5.7 1.3-5.7h2.6l-2.5 9h-2.6L22 22.4 20.4 28h-2.7l-2.5-9Zm15.1 2.3c1.9 0 3.2 1.4 3.2 3.4 0 2.1-1.3 3.5-3.2 3.5s-3.2-1.4-3.2-3.5c0-2 1.3-3.4 3.2-3.4Zm0 1.9c-.7 0-1.1.6-1.1 1.5 0 1 .4 1.6 1.1 1.6s1.1-.6 1.1-1.6c0-.9-.4-1.5-1.1-1.5Z"/></svg>';
-		} else {
-			$svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect width="48" height="48" rx="10" fill="#2563eb"/><path fill="#fff" d="M13 14h22v5H13v-5Zm0 8h22v5H13v-5Zm0 8h22v5H13v-5Z"/></svg>';
-		}
-
-		return 'data:image/svg+xml,' . rawurlencode($svg);
-	}
 }

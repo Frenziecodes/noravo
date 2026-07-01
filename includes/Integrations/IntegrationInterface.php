@@ -19,6 +19,9 @@ interface IntegrationInterface {
 	/** Short description shown in admin settings. */
 	public function description(): string;
 
+	/** Icon URL shown in admin integration lists. */
+	public function icon_url(): string;
+
 	/** Whether required plugins or services are present. */
 	public function is_available(): bool;
 
