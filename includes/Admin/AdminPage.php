@@ -142,8 +142,13 @@ final class AdminPage {
 		}
 
 		if ( 'appearance' === $form ) {
-			$updates['position']  = isset( $_POST['position']) ? sanitize_text_field(wp_unslash( $_POST['position']) ) : '';
-			$updates['animation'] = isset( $_POST['animation']) ? sanitize_text_field(wp_unslash( $_POST['animation']) ) : '';
+			if (isset( $_POST['position']) ) {
+				$updates['position'] = sanitize_text_field(wp_unslash( $_POST['position']) );
+			}
+
+			if (isset( $_POST['animation']) ) {
+				$updates['animation'] = sanitize_text_field(wp_unslash( $_POST['animation']) );
+			}
 		}
 
 		if ( 'settings' === $form ) {
@@ -354,37 +359,98 @@ final class AdminPage {
 		}
 
 		$settings = $this->settings->all();
+		$tabs     = array(
+			'templates'  => __( 'Templates', 'noravo' ),
+			'layout'     => __( 'Layout', 'noravo' ),
+			'colors'     => __( 'Colors', 'noravo' ),
+			'typography' => __( 'Typography', 'noravo' ),
+			'avatar'     => __( 'Avatar / Icon', 'noravo' ),
+			'position'   => __( 'Position', 'noravo' ),
+			'animations' => __( 'Animations', 'noravo' ),
+		);
+		$active_tab = isset( $_GET['tab']) ? sanitize_key(wp_unslash( $_GET['tab']) ) : 'templates';
+
+		if ( ! isset( $tabs[$active_tab]) ) {
+			$active_tab = 'templates';
+		}
 		?>
 		<div class="wrap noravo-admin">
-			<div class="noravo-shell">
-				<?php $this->header( __( 'Appearance', 'noravo' ), __( 'Customize how notifications look on the frontend.', 'noravo' ), $settings); ?>
+			<div class="noravo-shell noravo-appearance-shell">
 				<?php $this->updated_notice(); ?>
-				<form method="post" action="<?php echo esc_url(admin_url( 'admin-post.php' ) ); ?>" class="noravo-grid">
+				<nav class="noravo-settings-tabbar noravo-appearance-tabbar" aria-label="<?php esc_attr_e( 'Appearance sections', 'noravo' ); ?>">
+					<?php foreach ( $tabs as $tab => $label ) : ?>
+						<a
+							class="noravo-settings-tab <?php echo $active_tab === $tab ? 'is-active' : ''; ?>"
+							href="<?php echo esc_url(add_query_arg(array( 'page' => 'noravo-appearance', 'tab' => $tab), admin_url( 'admin.php' ) ) ); ?>"
+						>
+							<?php echo esc_html( $label); ?>
+						</a>
+					<?php endforeach; ?>
+				</nav>
+				<form method="post" action="<?php echo esc_url(admin_url( 'admin-post.php' ) ); ?>" class="noravo-settings-form noravo-appearance-form">
 					<?php $this->form_fields( 'appearance'); ?>
-					<section class="noravo-panel">
-						<h2><?php esc_html_e( 'Display', 'noravo' ); ?></h2>
-						<div class="noravo-field">
-							<label for="noravo-position">
-								<?php esc_html_e( 'Position', 'noravo' ); ?>
-								<?php $this->help(__( 'Where notifications appear on the visitor-facing site.', 'noravo' ) ); ?>
-							</label>
-							<select id="noravo-position" name="position">
-								<?php foreach (array( 'bottom-left', 'bottom-right', 'top-left', 'top-right' ) as $position) : ?>
-									<option value="<?php echo esc_attr( $position); ?>" <?php selected( $settings['position'], $position); ?>><?php echo esc_html(ucwords(str_replace( '-', ' ', $position) )); ?></option>
-								<?php endforeach; ?>
-							</select>
+					<div class="noravo-appearance-layout">
+						<section class="noravo-panel noravo-settings-panel noravo-appearance-panel">
+							<h2><?php echo esc_html( $tabs[$active_tab]); ?></h2>
+							<?php if ( 'templates' === $active_tab ) : ?>
+								<div class="noravo-template-options" aria-label="<?php esc_attr_e( 'Notification templates', 'noravo' ); ?>">
+									<button type="button" class="is-active"><?php esc_html_e( 'Default', 'noravo' ); ?></button>
+									<button type="button"><?php esc_html_e( 'Minimal', 'noravo' ); ?></button>
+									<button type="button"><?php esc_html_e( 'Modern', 'noravo' ); ?></button>
+									<button type="button"><?php esc_html_e( 'Glass', 'noravo' ); ?></button>
+									<button type="button"><?php esc_html_e( 'Compact', 'noravo' ); ?></button>
+									<button type="button"><?php esc_html_e( 'Dark', 'noravo' ); ?></button>
+									<button type="button"><?php esc_html_e( 'Rounded', 'noravo' ); ?></button>
+								</div>
+							<?php endif; ?>
+							<?php if ( 'position' === $active_tab ) : ?>
+								<div class="noravo-field">
+									<label for="noravo-position">
+										<?php esc_html_e( 'Position', 'noravo' ); ?>
+										<?php $this->help(__( 'Where notifications appear on the visitor-facing site.', 'noravo' ) ); ?>
+									</label>
+									<select id="noravo-position" name="position">
+										<?php foreach (array( 'bottom-left', 'bottom-right', 'top-left', 'top-right' ) as $position) : ?>
+											<option value="<?php echo esc_attr( $position); ?>" <?php selected( $settings['position'], $position); ?>><?php echo esc_html(ucwords(str_replace( '-', ' ', $position) )); ?></option>
+										<?php endforeach; ?>
+									</select>
+								</div>
+							<?php endif; ?>
+							<?php if ( 'animations' === $active_tab ) : ?>
+								<div class="noravo-field">
+									<label for="noravo-animation">
+										<?php esc_html_e( 'Animation', 'noravo' ); ?>
+										<?php $this->help(__( 'The entrance style used when each notification appears.', 'noravo' ) ); ?>
+									</label>
+									<select id="noravo-animation" name="animation">
+										<option value="slide" <?php selected( $settings['animation'], 'slide' ); ?>><?php esc_html_e( 'Slide', 'noravo' ); ?></option>
+										<option value="fade" <?php selected( $settings['animation'], 'fade' ); ?>><?php esc_html_e( 'Fade', 'noravo' ); ?></option>
+									</select>
+								</div>
+							<?php endif; ?>
+							<?php if (in_array( $active_tab, array( 'layout', 'colors', 'typography', 'avatar' ), true) ) : ?>
+								<div class="noravo-appearance-placeholder">
+									<?php esc_html_e( 'Controls for this section will be added here.', 'noravo' ); ?>
+								</div>
+							<?php endif; ?>
+						</section>
+						<div class="noravo-live-preview" aria-label="<?php esc_attr_e( 'Live preview', 'noravo' ); ?>">
+							<div class="noravo-live-preview-stage">
+								<div class="noravo-preview-toast">
+									<span class="noravo-preview-avatar"></span>
+									<span>
+										<strong><?php esc_html_e( 'John Doe', 'noravo' ); ?></strong>
+										<em><?php esc_html_e( 'purchased Hoodie', 'noravo' ); ?></em>
+										<small><?php esc_html_e( '2 mins ago  •  Nairobi, KE', 'noravo' ); ?></small>
+									</span>
+								</div>
+							</div>
+							<div class="noravo-live-preview-note">
+								<strong><?php esc_html_e( 'Live Preview', 'noravo' ); ?></strong>
+								<span><?php esc_html_e( 'Preview controls will be connected later.', 'noravo' ); ?></span>
+							</div>
 						</div>
-						<div class="noravo-field">
-							<label for="noravo-animation">
-								<?php esc_html_e( 'Animation', 'noravo' ); ?>
-								<?php $this->help(__( 'The entrance style used when each notification appears.', 'noravo' ) ); ?>
-							</label>
-							<select id="noravo-animation" name="animation">
-								<option value="slide" <?php selected( $settings['animation'], 'slide' ); ?>><?php esc_html_e( 'Slide', 'noravo' ); ?></option>
-								<option value="fade" <?php selected( $settings['animation'], 'fade' ); ?>><?php esc_html_e( 'Fade', 'noravo' ); ?></option>
-							</select>
-						</div>
-					</section>
+					</div>
 					<?php $this->save_actions(); ?>
 				</form>
 			</div>
@@ -431,12 +497,12 @@ final class AdminPage {
 							<div class="noravo-field">
 								<label for="noravo-time-format">
 									<?php esc_html_e( 'Time display', 'noravo' ); ?>
-									<?php $this->help(__( 'How notification timestamps are shown after the first day.', 'noravo' ) ); ?>
+									<?php $this->help(__( 'Choose how much detail to show in notification timestamps after the first day.', 'noravo' ) ); ?>
 								</label>
 								<select id="noravo-time-format" name="time_format">
-									<option value="rounded" <?php selected( $settings['time_format'], 'rounded' ); ?>><?php esc_html_e( 'Rounded', 'noravo' ); ?></option>
-									<option value="days_hours" <?php selected( $settings['time_format'], 'days_hours' ); ?>><?php esc_html_e( 'Days and hours', 'noravo' ); ?></option>
-									<option value="full" <?php selected( $settings['time_format'], 'full' ); ?>><?php esc_html_e( 'Full detail', 'noravo' ); ?></option>
+									<option value="rounded" <?php selected( $settings['time_format'], 'rounded' ); ?>><?php esc_html_e( '3 days ago', 'noravo' ); ?></option>
+									<option value="days_hours" <?php selected( $settings['time_format'], 'days_hours' ); ?>><?php esc_html_e( '3 days 5 hours ago', 'noravo' ); ?></option>
+									<option value="full" <?php selected( $settings['time_format'], 'full' ); ?>><?php esc_html_e( '3 days 5 hours 40 minutes ago', 'noravo' ); ?></option>
 								</select>
 							</div>
 							<div class="noravo-field">
@@ -511,10 +577,13 @@ final class AdminPage {
 		$page         = sanitize_key( wp_unslash( $_GET['page'] ?? 'noravo' ) );
 		$redirect_url = admin_url( 'admin.php?page=' . $page );
 
-		if ( 'noravo-settings' === $page && isset( $_GET['tab']) ) {
+		if (in_array( $page, array( 'noravo-settings', 'noravo-appearance' ), true) && isset( $_GET['tab']) ) {
 			$tab = sanitize_key(wp_unslash( $_GET['tab']) );
+			$allowed_tabs = 'noravo-appearance' === $page
+				? array( 'templates', 'layout', 'colors', 'typography', 'avatar', 'position', 'animations' )
+				: array( 'general', 'timing', 'behavior' );
 
-			if (in_array( $tab, array( 'general', 'timing', 'behavior' ), true) ) {
+			if (in_array( $tab, $allowed_tabs, true) ) {
 				$redirect_url = add_query_arg( 'tab', $tab, $redirect_url);
 			}
 		}
