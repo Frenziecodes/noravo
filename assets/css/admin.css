@@ -543,6 +543,204 @@
 	color: #777;
 }
 
+.noravo-rule-modal {
+	position: fixed;
+	inset: 0;
+	z-index: 100000;
+	display: none;
+	padding: 5vh 32px;
+	background: rgba(15, 23, 42, 0.42);
+}
+
+.noravo-rule-modal.is-open {
+	display: block;
+}
+
+.noravo-rule-modal-open {
+	overflow: hidden;
+}
+
+.noravo-rule-modal-panel {
+	display: grid;
+	grid-template-rows: auto minmax(0, 1fr);
+	width: min(1120px, 100%);
+	max-height: 90vh;
+	margin: 0 auto;
+	background: #ffffff;
+	border-radius: 8px;
+	box-shadow: 0 24px 72px rgba(15, 23, 42, 0.28);
+	overflow: hidden;
+}
+
+.noravo-rule-modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px;
+	min-height: 72px;
+	padding: 0 24px;
+	background: #ffffff;
+	border-bottom: 1px solid #e7ebf0;
+}
+
+.noravo-rule-modal-header h2 {
+	margin: 0;
+	font-size: 21px;
+	line-height: 1.25;
+	color: #1d2327;
+}
+
+.noravo-rule-modal-actions {
+	display: inline-flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.noravo-rule-modal-actions button {
+	display: grid;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	place-items: center;
+	color: #1d2327;
+	background: transparent;
+	border: 0;
+	cursor: pointer;
+}
+
+.noravo-rule-modal-actions .dashicons {
+	width: 24px;
+	height: 24px;
+	font-size: 24px;
+}
+
+.noravo-rule-modal-body {
+	display: grid;
+	grid-template-columns: 240px minmax(0, 1fr);
+	gap: 22px;
+	min-height: 0;
+	padding: 22px 24px 28px;
+	overflow: auto;
+}
+
+.noravo-trigger-categories {
+	display: grid;
+	align-content: start;
+	gap: 0;
+	padding: 18px;
+	background: #f6f6f6;
+	border-radius: 8px;
+}
+
+.noravo-trigger-categories button {
+	min-height: 46px;
+	padding: 0 14px;
+	text-align: left;
+	font-size: 14px;
+	color: #1d2327;
+	background: transparent;
+	border: 2px solid transparent;
+	cursor: pointer;
+}
+
+.noravo-trigger-categories button:hover,
+.noravo-trigger-categories button:focus {
+	background: #ffffff;
+	outline: none;
+}
+
+.noravo-trigger-categories button.is-active {
+	color: #ffffff;
+	background: #1f1f1f;
+	border-color: #4353ff;
+	box-shadow: 0 0 0 1px #4353ff;
+}
+
+.noravo-trigger-groups {
+	min-width: 0;
+}
+
+.noravo-trigger-group {
+	display: none;
+}
+
+.noravo-trigger-group.is-active {
+	display: block;
+}
+
+.noravo-trigger-group h3 {
+	margin: 12px 0 22px;
+	font-size: 26px;
+	line-height: 1.15;
+	color: #1d2327;
+}
+
+.noravo-trigger-cards {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(280px, 1fr));
+	gap: 18px;
+}
+
+.noravo-trigger-card {
+	display: grid;
+	min-height: 170px;
+	background: #ffffff;
+	border: 1px solid #d8dde6;
+	border-radius: 8px;
+	box-shadow: 0 1px 2px rgba(23, 32, 38, 0.06);
+}
+
+.noravo-trigger-card header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 18px 20px;
+	border-bottom: 1px solid #d8dde6;
+}
+
+.noravo-trigger-card h4 {
+	margin: 0;
+	font-size: 17px;
+	line-height: 1.3;
+	color: #1d2327;
+}
+
+.noravo-trigger-card header .dashicons {
+	width: 24px;
+	height: 24px;
+	font-size: 24px;
+	color: #7e4cb4;
+}
+
+.noravo-trigger-card p {
+	margin: 0;
+	padding: 18px 20px 10px;
+	font-size: 14px;
+	line-height: 1.45;
+	color: #70757a;
+}
+
+.noravo-trigger-card .button-primary {
+	justify-self: start;
+	align-self: end;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	min-height: 36px;
+	margin: 0 20px 20px;
+	padding: 0 13px;
+	font-size: 14px;
+	background: #4353e8;
+	border-color: #4353e8;
+	border-radius: 3px;
+}
+
+.noravo-trigger-empty {
+	margin: 0;
+	color: #70757a;
+}
+
 .noravo-appearance-shell {
 	max-width: none;
 	margin-top: 12px;
@@ -942,6 +1140,33 @@
 		overflow-x: auto;
 	}
 
+	.noravo-rule-modal-body {
+		grid-template-columns: 1fr;
+		padding: 18px;
+	}
+
+	.noravo-trigger-categories {
+		display: flex;
+		gap: 8px;
+		overflow-x: auto;
+		padding: 12px;
+	}
+
+	.noravo-trigger-categories button {
+		flex: 0 0 auto;
+		min-height: 40px;
+		white-space: nowrap;
+	}
+
+	.noravo-trigger-cards {
+		grid-template-columns: 1fr;
+		gap: 20px;
+	}
+
+	.noravo-trigger-group h3 {
+		margin: 20px 0;
+	}
+
 	.noravo-field-row {
 		grid-template-columns: 1fr;
 	}
@@ -980,6 +1205,23 @@
 }
 
 @media (max-width: 782px) {
+	.noravo-rule-modal {
+		padding: 16px;
+	}
+
+	.noravo-rule-modal-panel {
+		max-height: calc(100vh - 32px);
+	}
+
+	.noravo-rule-modal-header {
+		min-height: 64px;
+		padding: 0 16px;
+	}
+
+	.noravo-rule-modal-header h2 {
+		font-size: 18px;
+	}
+
 	.noravo-settings-form .noravo-actions,
 	.folded .noravo-settings-form .noravo-actions,
 	.noravo-appearance-form .noravo-actions,

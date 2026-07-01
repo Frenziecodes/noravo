@@ -305,6 +305,8 @@ final class AdminPage {
 		if (! current_user_can( 'manage_options' ) ) {
 			return;
 		}
+
+		$trigger_groups = $this->automation_trigger_groups();
 		?>
 		<div class="wrap noravo-admin">
 			<div class="noravo-shell noravo-automation-shell">
@@ -313,7 +315,7 @@ final class AdminPage {
 						<h1><?php esc_html_e( 'Automation Rules', 'noravo' ); ?></h1>
 						<p><?php esc_html_e( 'Create rules that automatically run actions when certain events occur.', 'noravo' ); ?></p>
 					</div>
-					<a href="#" class="button button-primary noravo-automation-create"><?php esc_html_e( 'Create New Rule', 'noravo' ); ?></a>
+					<button type="button" class="button button-primary noravo-automation-create" data-noravo-open-rule-modal><?php esc_html_e( 'Create New Rule', 'noravo' ); ?></button>
 				</div>
 				<div class="noravo-rule-stats">
 					<div class="noravo-rule-stat">
@@ -361,6 +363,55 @@ final class AdminPage {
 							</tr>
 						</tbody>
 					</table>
+				</div>
+				<div class="noravo-rule-modal" id="noravo-rule-modal" aria-hidden="true">
+					<div class="noravo-rule-modal-panel" role="dialog" aria-modal="true" aria-labelledby="noravo-rule-modal-title">
+						<header class="noravo-rule-modal-header">
+							<h2 id="noravo-rule-modal-title"><?php esc_html_e( 'Select a trigger for your automation rule', 'noravo' ); ?></h2>
+							<div class="noravo-rule-modal-actions">
+								<button type="button" aria-label="<?php esc_attr_e( 'Go back', 'noravo' ); ?>" data-noravo-close-rule-modal>
+									<span class="dashicons dashicons-arrow-left-alt2"></span>
+								</button>
+								<button type="button" aria-label="<?php esc_attr_e( 'Close', 'noravo' ); ?>" data-noravo-close-rule-modal>
+									<span class="dashicons dashicons-no-alt"></span>
+								</button>
+							</div>
+						</header>
+						<div class="noravo-rule-modal-body">
+							<nav class="noravo-trigger-categories" aria-label="<?php esc_attr_e( 'Trigger categories', 'noravo' ); ?>">
+								<?php foreach ( $trigger_groups as $group_key => $group ) : ?>
+									<button type="button" class="<?php echo 'orders' === $group_key ? 'is-active' : ''; ?>" data-noravo-trigger-group="<?php echo esc_attr( $group_key); ?>">
+										<?php echo esc_html( $group['label']); ?>
+									</button>
+								<?php endforeach; ?>
+							</nav>
+							<div class="noravo-trigger-groups">
+								<?php foreach ( $trigger_groups as $group_key => $group ) : ?>
+									<section class="noravo-trigger-group <?php echo 'orders' === $group_key ? 'is-active' : ''; ?>" data-noravo-trigger-panel="<?php echo esc_attr( $group_key); ?>">
+										<h3><?php echo esc_html( $group['label']); ?></h3>
+										<div class="noravo-trigger-cards">
+											<?php if (empty( $group['triggers']) ) : ?>
+												<p class="noravo-trigger-empty"><?php esc_html_e( 'No triggers are available in this section yet.', 'noravo' ); ?></p>
+											<?php endif; ?>
+											<?php foreach ( $group['triggers'] as $trigger ) : ?>
+												<article class="noravo-trigger-card">
+													<header>
+														<h4><?php echo esc_html( $trigger['title']); ?></h4>
+														<span class="dashicons dashicons-money-alt" aria-hidden="true"></span>
+													</header>
+													<p><?php echo esc_html( $trigger['description']); ?></p>
+													<button type="button" class="button button-primary">
+														<?php esc_html_e( 'Use trigger', 'noravo' ); ?>
+														<span class="dashicons dashicons-arrow-right-alt" aria-hidden="true"></span>
+													</button>
+												</article>
+											<?php endforeach; ?>
+										</div>
+									</section>
+								<?php endforeach; ?>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -654,6 +705,39 @@ final class AdminPage {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Returns automation trigger groups shown in the rule picker.
+	 *
+	 * @return array<string, array{label: string, triggers: array<int, array<string, string>>}>
+	 */
+	private function automation_trigger_groups(): array {
+		$order_triggers = array(
+			array(
+				'id'          => 'woocommerce_order_processing',
+				'title'       => __( 'Order > Processing', 'noravo' ),
+				'description' => __( 'When a WooCommerce order is marked as processing.', 'noravo' ),
+				'integration' => 'woocommerce',
+			),
+			array(
+				'id'          => 'woocommerce_order_completed',
+				'title'       => __( 'Order > Completed', 'noravo' ),
+				'description' => __( 'When a WooCommerce order is completed.', 'noravo' ),
+				'integration' => 'woocommerce',
+			),
+		);
+
+		return array(
+			'featured' => array(
+				'label'    => __( 'Featured', 'noravo' ),
+				'triggers' => $order_triggers,
+			),
+			'orders'   => array(
+				'label'    => __( 'Orders', 'noravo' ),
+				'triggers' => $order_triggers,
+			),
+		);
 	}
 
 	/** Renders a styled checkbox toggle field. */
