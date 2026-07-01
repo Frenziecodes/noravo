@@ -1,6 +1,69 @@
 (function () {
 	'use strict';
 
+	if (document.querySelector('.noravo-settings-shell, .noravo-appearance-shell')) {
+		document.body.classList.add('noravo-fixed-actions-page');
+	}
+
+	function setupAppearancePreview() {
+		var preview = document.querySelector('[data-noravo-appearance-preview]');
+		var root = preview ? preview.querySelector('.noravo-preview-root') : null;
+		var positionField = document.getElementById('noravo-position');
+		var animationField = document.getElementById('noravo-animation');
+		var templateButtons = document.querySelectorAll('.noravo-template-options button');
+		var positions = ['bottom-left', 'bottom-right', 'top-left', 'top-right'];
+		var animations = ['slide', 'fade'];
+
+		if (!preview || !root) {
+			return;
+		}
+
+		function replaceClass(values, prefix, nextValue) {
+			values.forEach(function (value) {
+				root.classList.remove(prefix + value);
+			});
+
+			root.classList.add(prefix + nextValue);
+		}
+
+		function replayAnimation() {
+			var toast = root.querySelector('.noravo-toast');
+
+			if (!toast) {
+				return;
+			}
+
+			toast.style.animation = 'none';
+			toast.offsetHeight;
+			toast.style.animation = '';
+		}
+
+		if (positionField) {
+			positionField.addEventListener('change', function () {
+				replaceClass(positions, 'noravo-', positionField.value);
+			});
+		}
+
+		if (animationField) {
+			animationField.addEventListener('change', function () {
+				replaceClass(animations, 'noravo-animation-', animationField.value);
+				replayAnimation();
+			});
+		}
+
+		templateButtons.forEach(function (button) {
+			button.addEventListener('click', function () {
+				templateButtons.forEach(function (item) {
+					item.classList.remove('is-active');
+				});
+
+				button.classList.add('is-active');
+			});
+		});
+	}
+
+	setupAppearancePreview();
+
 	var modal = document.getElementById('noravo-rule-modal');
 
 	if (!modal) {

@@ -1083,6 +1083,55 @@ final class AdminPage {
 		<?php
 	}
 
+	/**
+	 * Returns notification templates available in the Appearance screen.
+	 *
+	 * @return array<string, array{label: string}>
+	 */
+	private function appearance_templates(): array {
+		$templates = array(
+			'default' => array(
+				'label' => __( 'Default', 'noravo' ),
+			),
+		);
+
+		/**
+		 * Filters the registered Noravo notification templates.
+		 *
+		 * @param array<string, array{label: string}> $templates Template definitions keyed by template slug.
+		 */
+		return apply_filters( 'noravo_appearance_templates', $templates );
+	}
+
+	/**
+	 * Returns sample notification copy for the Appearance preview.
+	 *
+	 * @param array<string, mixed> $settings Current plugin settings.
+	 * @return array{title: string, message: string, time: string}
+	 */
+	private function appearance_preview_notification(array $settings): array {
+		$customer_display = (string) ( $settings['customer_display'] ?? 'location' );
+		$time_format      = (string) ( $settings['time_format'] ?? 'rounded' );
+
+		$title = match ( $customer_display ) {
+			'full_name'   => __( 'John Doe', 'noravo' ),
+			'masked_name' => __( 'John D***', 'noravo' ),
+			default       => __( 'Someone in Nairobi, KE', 'noravo' ),
+		};
+
+		$time = match ( $time_format ) {
+			'days_hours' => __( '3 days 5 hours ago', 'noravo' ),
+			'full'       => __( '3 days 5 hours 40 minutes ago', 'noravo' ),
+			default      => __( '2 minutes ago', 'noravo' ),
+		};
+
+		return array(
+			'title'   => $title,
+			'message' => __( 'purchased Hoodie', 'noravo' ),
+			'time'    => $time,
+		);
+	}
+
 	/** Outputs the appearance admin page. */
 	public function render_appearance(): void {
 		if (! current_user_can( 'manage_options' ) ) {
@@ -1090,6 +1139,8 @@ final class AdminPage {
 		}
 
 		$settings = $this->settings->all();
+		$templates = $this->appearance_templates();
+		$preview  = $this->appearance_preview_notification( $settings );
 		$tabs     = array(
 			'templates'  => __( 'Templates', 'noravo' ),
 			'layout'     => __( 'Layout', 'noravo' ),
@@ -1125,13 +1176,11 @@ final class AdminPage {
 							<h2><?php echo esc_html( $tabs[$active_tab]); ?></h2>
 							<?php if ( 'templates' === $active_tab ) : ?>
 								<div class="noravo-template-options" aria-label="<?php esc_attr_e( 'Notification templates', 'noravo' ); ?>">
-									<button type="button" class="is-active"><?php esc_html_e( 'Default', 'noravo' ); ?></button>
-									<button type="button"><?php esc_html_e( 'Minimal', 'noravo' ); ?></button>
-									<button type="button"><?php esc_html_e( 'Modern', 'noravo' ); ?></button>
-									<button type="button"><?php esc_html_e( 'Glass', 'noravo' ); ?></button>
-									<button type="button"><?php esc_html_e( 'Compact', 'noravo' ); ?></button>
-									<button type="button"><?php esc_html_e( 'Dark', 'noravo' ); ?></button>
-									<button type="button"><?php esc_html_e( 'Rounded', 'noravo' ); ?></button>
+									<?php foreach ( $templates as $template_slug => $template ) : ?>
+										<button type="button" class="<?php echo 'default' === $template_slug ? 'is-active' : ''; ?>">
+											<?php echo esc_html( $template['label']); ?>
+										</button>
+									<?php endforeach; ?>
 								</div>
 							<?php endif; ?>
 							<?php if ( 'position' === $active_tab ) : ?>
@@ -1166,19 +1215,30 @@ final class AdminPage {
 							<?php endif; ?>
 						</section>
 						<div class="noravo-live-preview" aria-label="<?php esc_attr_e( 'Live preview', 'noravo' ); ?>">
-							<div class="noravo-live-preview-stage">
-								<div class="noravo-preview-toast">
-									<span class="noravo-preview-avatar"></span>
-									<span>
-										<strong><?php esc_html_e( 'John Doe', 'noravo' ); ?></strong>
-										<em><?php esc_html_e( 'purchased Hoodie', 'noravo' ); ?></em>
-										<small><?php esc_html_e( '2 mins ago  •  Nairobi, KE', 'noravo' ); ?></small>
-									</span>
+							<div
+								class="noravo-live-preview-stage"
+								data-noravo-appearance-preview
+								data-position="<?php echo esc_attr( $settings['position']); ?>"
+								data-animation="<?php echo esc_attr( $settings['animation']); ?>"
+							>
+								<div class="noravo-preview-viewport">
+									<div class="noravo-preview-root noravo-<?php echo esc_attr( $settings['position']); ?> noravo-animation-<?php echo esc_attr( $settings['animation']); ?>">
+										<div class="noravo-toast is-visible">
+											<span class="noravo-toast-icon">
+												<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V6a5 5 0 0 1 10 0v2h2.2a1 1 0 0 1 1 .9l.8 11a2 2 0 0 1-2 2.1H5a2 2 0 0 1-2-2.1l.8-11a1 1 0 0 1 1-.9H7Zm2 0h6V6a3 3 0 0 0-6 0v2Z"></path></svg>
+											</span>
+											<span class="noravo-toast-body">
+												<strong><?php echo esc_html( $preview['title']); ?></strong>
+												<span><?php echo esc_html( $preview['message']); ?></span>
+												<small><?php echo esc_html( $preview['time']); ?></small>
+											</span>
+										</div>
+									</div>
 								</div>
 							</div>
 							<div class="noravo-live-preview-note">
 								<strong><?php esc_html_e( 'Live Preview', 'noravo' ); ?></strong>
-								<span><?php esc_html_e( 'Preview controls will be connected later.', 'noravo' ); ?></span>
+								<span><?php esc_html_e( 'Shows how the notification appears on the frontend.', 'noravo' ); ?></span>
 							</div>
 						</div>
 					</div>
