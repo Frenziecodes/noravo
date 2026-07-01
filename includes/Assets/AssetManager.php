@@ -115,11 +115,6 @@ final class AssetManager {
 			$admin_version
 		);
 
-		wp_add_inline_style(
-			'noravo-admin',
-			'.noravo-settings-tabbar{display:flex;align-items:stretch;gap:0;width:100%;min-height:72px;margin:0 0 22px;padding:0;background:#fff;border:1px solid #d8dde6}.noravo-settings-tab{display:inline-flex;align-items:center;min-height:72px;margin:0;padding:0 28px;text-decoration:none;font-size:15px;font-weight:400;line-height:1;color:#2c3338;background:transparent;border:0;border-bottom:3px solid transparent;box-shadow:none}.noravo-settings-tab:hover,.noravo-settings-tab:focus{color:#1d2327;background:#f8fafc;outline:none;box-shadow:none}.noravo-settings-tab.is-active,.noravo-settings-tab.is-active:focus,.noravo-settings-tab.is-active:hover{color:#1d2327;background:#fff;border-bottom-color:#4353ff}'
-		);
-
 		wp_enqueue_script(
 			'noravo-admin',
 			NORAVO_URL . 'assets/js/admin.js',
