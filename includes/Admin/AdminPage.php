@@ -224,16 +224,34 @@ final class AdminPage {
 		}
 
 		$status = 'active' === $status ? 'active' : 'draft';
+		$status_note = '';
+
+		if ('active' === $status && ! $this->integration_source_can_run($source)) {
+			$status      = 'draft';
+			$status_note = $this->integration_disabled_note($source);
+		}
 
 		if ('' !== $rule_id && null !== $this->automation_rules->find($rule_id)) {
 			$this->automation_rules->update_rule($rule_id, $name, $trigger, $action, $status, $source);
+			if ('' !== $status_note) {
+				$this->automation_rules->update_status($rule_id, 'draft', $status_note);
+			}
 		} else {
-			$this->automation_rules->create($name, $trigger, $action, $status, $source);
+			$rule = $this->automation_rules->create($name, $trigger, $action, $status, $source);
+			if ('' !== $status_note) {
+				$this->automation_rules->update_status((string) $rule['id'], 'draft', $status_note);
+			}
+		}
+
+		$redirect_args = array('updated' => 'true');
+
+		if ('' !== $status_note) {
+			$redirect_args['notice'] = 'integration_required';
 		}
 
 		wp_safe_redirect(
 			wp_nonce_url(
-				add_query_arg('updated', 'true', admin_url('admin.php?page=noravo-campaigns')),
+				add_query_arg($redirect_args, admin_url('admin.php?page=noravo-campaigns')),
 				'noravo_settings_updated'
 			)
 		);
@@ -251,13 +269,27 @@ final class AdminPage {
 
 		check_admin_referer( 'noravo_toggle_automation_rule_' . $rule_id );
 
-		if ('' !== $rule_id && null !== $this->automation_rules->find($rule_id)) {
-			$this->automation_rules->update_status($rule_id, 'active' === $state ? 'active' : 'draft');
+		$notice = '';
+		$rule   = '' !== $rule_id ? $this->automation_rules->find($rule_id) : null;
+
+		if (null !== $rule) {
+			if ('active' === $state && ! $this->integration_source_can_run((string) $rule['source'])) {
+				$this->automation_rules->update_status($rule_id, 'draft', $this->integration_disabled_note((string) $rule['source']));
+				$notice = 'integration_required';
+			} else {
+				$this->automation_rules->update_status($rule_id, 'active' === $state ? 'active' : 'draft');
+			}
+		}
+
+		$redirect_args = array('updated' => 'true');
+
+		if ('' !== $notice) {
+			$redirect_args['notice'] = $notice;
 		}
 
 		wp_safe_redirect(
 			wp_nonce_url(
-				add_query_arg('updated', 'true', admin_url('admin.php?page=noravo-campaigns')),
+				add_query_arg($redirect_args, admin_url('admin.php?page=noravo-campaigns')),
 				'noravo_settings_updated'
 			)
 		);
@@ -327,6 +359,7 @@ final class AdminPage {
 
 		if ( 'deactivate' === $state ) {
 			$sources = array_values(array_diff( $sources, array( $integration) ) );
+			$this->automation_rules->pause_active_by_source($integration, $this->integration_disabled_note($integration));
 		}
 
 		$this->settings->update(
@@ -705,6 +738,9 @@ final class AdminPage {
 										<div class="noravo-rule-title">
 											<strong><?php echo esc_html($rule['name']); ?></strong>
 											<small><?php echo esc_html($this->automation_trigger_description($rule['trigger'])); ?></small>
+											<?php if (! empty($rule['status_note'])) : ?>
+												<em><?php echo esc_html((string) $rule['status_note']); ?></em>
+											<?php endif; ?>
 										</div>
 									</td>
 									<td>
@@ -1261,6 +1297,15 @@ final class AdminPage {
 		if ( ! $show_updated) {
 			return;
 		}
+
+		$notice = isset( $_GET['notice']) ? sanitize_key(wp_unslash( $_GET['notice']) ) : '';
+
+		if ('integration_required' === $notice) {
+			?>
+			<div class="notice notice-warning is-dismissible"><p><?php esc_html_e( 'Enable the required integration before activating this automation rule.', 'noravo' ); ?></p></div>
+			<?php
+			return;
+		}
 		?>
 		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Noravo settings saved.', 'noravo' ); ?></p></div>
 		<?php
@@ -1307,6 +1352,34 @@ final class AdminPage {
 		}
 
 		return false;
+	}
+
+	/** Whether an integration source is enabled and available. */
+	private function integration_source_can_run(string $source): bool {
+		$source   = sanitize_key($source);
+		$settings = $this->settings->all();
+
+		return in_array($source, (array) $settings['enabled_sources'], true) && $this->integration_is_available($source);
+	}
+
+	/** Returns an integration label by source key. */
+	private function integration_label(string $integration_id): string {
+		foreach ( $this->integrations->all() as $integration ) {
+			if ( $integration->id() === $integration_id ) {
+				return $integration->label();
+			}
+		}
+
+		return ucwords(str_replace('_', ' ', sanitize_key($integration_id)));
+	}
+
+	/** Returns the note shown when a rule is paused by integration state. */
+	private function integration_disabled_note(string $source): string {
+		return sprintf(
+			/* translators: %s: Integration name. */
+			__('%s disabled', 'noravo'),
+			$this->integration_label($source)
+		);
 	}
 
 	/**

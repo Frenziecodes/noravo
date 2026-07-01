@@ -44,6 +44,7 @@ final class AutomationRuleRepository {
 				'trigger'    => $trigger,
 				'action'     => $action,
 				'status'     => $status,
+				'status_note' => '',
 				'source'     => $source,
 				'times_run'  => 0,
 				'created_at' => $now,
@@ -86,6 +87,7 @@ final class AutomationRuleRepository {
 						'trigger'    => $trigger,
 						'action'     => $action,
 						'status'     => $status,
+						'status_note' => 'active' === $status ? '' : (string) ($rule['status_note'] ?? ''),
 						'source'     => $source,
 						'updated_at' => $now,
 					)
@@ -98,19 +100,45 @@ final class AutomationRuleRepository {
 	}
 
 	/** Toggles a rule status. */
-	public function update_status(string $id, string $status): void {
+	public function update_status(string $id, string $status, string $status_note = ''): void {
 		$rules = $this->all();
 		$now   = current_time('mysql');
 
 		foreach ($rules as $index => $rule) {
 			if ($rule['id'] === $id) {
 				$rules[$index]['status']     = 'active' === $status ? 'active' : 'draft';
+				$rules[$index]['status_note'] = 'active' === $status ? '' : $status_note;
 				$rules[$index]['updated_at'] = $now;
 				break;
 			}
 		}
 
 		update_option(self::OPTION, array_values(array_map(array($this, 'sanitize_rule'), $rules)), false);
+	}
+
+	/** Pauses every active rule that depends on a source. */
+	public function pause_active_by_source(string $source, string $status_note): int {
+		$source  = sanitize_key($source);
+		$rules   = $this->all();
+		$changed = 0;
+		$now     = current_time('mysql');
+
+		foreach ($rules as $index => $rule) {
+			if ($source !== $rule['source'] || 'active' !== $rule['status']) {
+				continue;
+			}
+
+			$rules[$index]['status']      = 'draft';
+			$rules[$index]['status_note'] = sanitize_text_field($status_note);
+			$rules[$index]['updated_at']  = $now;
+			$changed++;
+		}
+
+		if (0 < $changed) {
+			update_option(self::OPTION, array_values(array_map(array($this, 'sanitize_rule'), $rules)), false);
+		}
+
+		return $changed;
 	}
 
 	/** Deletes a rule. */
@@ -189,6 +217,7 @@ final class AutomationRuleRepository {
 			'trigger'    => sanitize_key((string) ($rule['trigger'] ?? '')),
 			'action'     => sanitize_key((string) ($rule['action'] ?? '')),
 			'status'     => in_array($status, array('active', 'draft'), true) ? $status : 'draft',
+			'status_note' => sanitize_text_field((string) ($rule['status_note'] ?? '')),
 			'source'     => sanitize_key((string) ($rule['source'] ?? '')),
 			'times_run'  => absint($rule['times_run'] ?? 0),
 			'created_at' => sanitize_text_field((string) ($rule['created_at'] ?? '')),

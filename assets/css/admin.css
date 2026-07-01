@@ -938,6 +938,22 @@
 	color: #70757a;
 }
 
+.noravo-rule-title em {
+	display: inline-flex;
+	width: fit-content;
+	min-height: 20px;
+	padding: 0 7px;
+	align-items: center;
+	font-size: 11px;
+	font-style: normal;
+	font-weight: 600;
+	line-height: 1;
+	color: #9a3412;
+	background: #fff7ed;
+	border: 1px solid #fed7aa;
+	border-radius: 999px;
+}
+
 .noravo-rule-steps,
 .noravo-rule-actions,
 .noravo-pagination-links {

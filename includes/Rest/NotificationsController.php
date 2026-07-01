@@ -85,7 +85,13 @@ final class NotificationsController {
 		}
 
 		$settings            = $this->settings->all();
-		$active_rule_sources = $this->automation_rules->active_sources();
+		$enabled_sources     = (array) $settings['enabled_sources'];
+		$active_rule_sources = array_values(
+			array_filter(
+				$this->automation_rules->active_sources(),
+				static fn (string $source): bool => in_array($source, $enabled_sources, true)
+			)
+		);
 		$sources             = $settings['enabled_sources'];
 		$sources             = array_values(array_unique(array_merge($sources, $active_rule_sources)));
 
