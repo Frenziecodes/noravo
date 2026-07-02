@@ -1143,10 +1143,6 @@ final class AdminPage {
 		$preview  = $this->appearance_preview_notification( $settings );
 		$tabs     = array(
 			'templates'  => __( 'Templates', 'noravo' ),
-			'layout'     => __( 'Layout', 'noravo' ),
-			'colors'     => __( 'Colors', 'noravo' ),
-			'typography' => __( 'Typography', 'noravo' ),
-			'avatar'     => __( 'Avatar / Icon', 'noravo' ),
 			'position'   => __( 'Position', 'noravo' ),
 			'animations' => __( 'Animations', 'noravo' ),
 		);
@@ -1206,11 +1202,6 @@ final class AdminPage {
 										<option value="slide" <?php selected( $settings['animation'], 'slide' ); ?>><?php esc_html_e( 'Slide', 'noravo' ); ?></option>
 										<option value="fade" <?php selected( $settings['animation'], 'fade' ); ?>><?php esc_html_e( 'Fade', 'noravo' ); ?></option>
 									</select>
-								</div>
-							<?php endif; ?>
-							<?php if (in_array( $active_tab, array( 'layout', 'colors', 'typography', 'avatar' ), true) ) : ?>
-								<div class="noravo-appearance-placeholder">
-									<?php esc_html_e( 'Controls for this section will be added here.', 'noravo' ); ?>
 								</div>
 							<?php endif; ?>
 						</section>
@@ -1380,7 +1371,7 @@ final class AdminPage {
 		if (in_array( $page, array( 'noravo-settings', 'noravo-appearance' ), true) && isset( $_GET['tab']) ) {
 			$tab = sanitize_key(wp_unslash( $_GET['tab']) );
 			$allowed_tabs = 'noravo-appearance' === $page
-				? array( 'templates', 'layout', 'colors', 'typography', 'avatar', 'position', 'animations' )
+				? array( 'templates', 'position', 'animations' )
 				: array( 'general', 'timing', 'behavior' );
 
 			if (in_array( $tab, $allowed_tabs, true) ) {

@@ -114,7 +114,7 @@ final class IntegrationsListTable extends \WP_List_Table {
 	 * @param IntegrationInterface $item Integration row.
 	 */
 	public function column_description($item): string {
-		if (! $item->is_available()) {
+		if ( ! $item->is_available()) {
 			return sprintf(
 				'<span class="description">%s</span>',
 				esc_html__('Install and activate the required plugin to use this integration.', 'noravo')

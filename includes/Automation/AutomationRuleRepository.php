@@ -26,7 +26,7 @@ final class AutomationRuleRepository {
 	public function all(): array {
 		$rules = get_option(self::OPTION, array());
 
-		if (! is_array($rules)) {
+		if ( ! is_array($rules)) {
 			return array();
 		}
 
